@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&family=Work+Sans:wght@400;500;600&display=swap');
 
 :root{
+  color-scheme: dark;
   --ink: #1B2430;
   --surface: #232E3D;
   --surface-2: #2B3849;
@@ -291,11 +292,11 @@ main{
 .type-btn{ flex:1; padding:9px; border-radius:9px; border:1px solid var(--line); background:transparent; color:var(--text-dim); font-size:13px; font-family:inherit; }
 .type-btn.active{ background: var(--amber); border-color: var(--amber); color: var(--ink); font-weight:600; }
 .field{ display:flex; flex-direction:column; gap:6px; margin-bottom:14px; font-size:13px; color: var(--text-dim); }
-.field input, .field select{ background: var(--surface-2); border:1px solid var(--line); border-radius:8px; padding:11px 12px; color: var(--text); font-size:15px; font-family:inherit; }
+.field input, .field select{ background: var(--surface-2); border:1px solid var(--line); border-radius:8px; padding:11px 12px; color: var(--text); font-size:15px; font-family:inherit; color-scheme: dark; }
 .time-row{ display:flex; gap:10px; }
 .time-row .field{ flex:1; }
 .color-row{ display:flex; gap:9px; flex-wrap:wrap; align-items:center; }
-.swatch{ width:28px; height:28px; border-radius:50%; border:2px solid transparent; flex-shrink:0; }
+.swatch{ width:28px; height:28px; border-radius:50%; border:2px solid var(--line); flex-shrink:0; }
 .swatch.selected{ border-color: var(--text); }
 .swatch-custom{ display:flex; align-items:center; justify-content:center; background: var(--surface-2); font-size:14px; color: var(--text-dim); }
 #customColorInput{ width:28px; height:28px; padding:0; border:none; background:none; }

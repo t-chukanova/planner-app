@@ -490,13 +490,13 @@ function openSheet(type, item, presetDate, presetStartMin) {
   document.getElementById('itemDate').value = item ? item.date : today;
 
   if (type === 'block') {
+    selectedColor = item ? item.color : COLORS[0];
+    buildColorRow();
     document.getElementById('itemTitle').value = item ? item.title : '';
     const startMin = item ? item.start : (presetStartMin != null ? presetStartMin : 540);
     const endMin = item ? item.end : startMin + 60;
     document.getElementById('itemStart').value = minutesLabel(startMin);
     document.getElementById('itemEnd').value = minutesLabel(endMin);
-    selectedColor = item ? item.color : COLORS[0];
-    buildColorRow();
   } else {
     document.getElementById('itemTitle').value = item ? item.title : '';
   }
