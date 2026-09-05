@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Планировщик</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="theme-color" content="#1B2430">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="header-row">
+    <button id="prevBtn" class="nav-btn" aria-label="Назад">‹</button>
+    <button id="dateLabel" class="date-label">4 сентября</button>
+    <button id="nextBtn" class="nav-btn" aria-label="Вперёд">›</button>
+  </div>
+  <nav class="view-tabs" id="viewTabs">
+    <button class="view-tab" data-view="day">День</button>
+    <button class="view-tab" data-view="3day">3 дня</button>
+    <button class="view-tab" data-view="week">Неделя</button>
+    <button class="view-tab" data-view="month">Месяц</button>
+    <button class="view-tab" data-view="quarter">3 месяца</button>
+    <button class="view-tab" data-view="year">Год</button>
+  </nav>
+</header>
+
+<div id="permBanner" class="perm-banner" hidden>
+  <p>Разреши уведомления, чтобы блоки напоминали о себе.</p>
+  <button id="permBtn" class="btn-primary">Разрешить</button>
+</div>
+
+<main id="viewRoot"></main>
+
+<button id="addBtn" class="fab" aria-label="Добавить">+</button>
+
+<div id="sheet" class="sheet" hidden>
+  <div class="sheet-inner">
+    <div class="sheet-type-toggle" id="typeToggle">
+      <button class="type-btn active" data-type="block">Блок времени</button>
+      <button class="type-btn" data-type="todo">Задача в списке</button>
+    </div>
+
+    <label class="field">
+      <span>Название</span>
+      <input type="text" id="itemTitle" placeholder="Например: тренировка" maxlength="120">
+    </label>
+
+    <label class="field">
+      <span>Дата</span>
+      <input type="date" id="itemDate">
+    </label>
+
+    <div id="blockTimeFields">
+      <div class="time-row">
+        <label class="field">
+          <span>Начало</span>
+          <input type="time" id="itemStart">
+        </label>
+        <label class="field">
+          <span>Конец</span>
+          <input type="time" id="itemEnd">
+        </label>
+      </div>
+      <div class="field">
+        <span>Цвет</span>
+        <div class="color-row" id="colorRow"></div>
+      </div>
+    </div>
+
+    <div class="sheet-actions">
+      <button id="deleteBtn" class="btn-danger" hidden>Удалить</button>
+      <button id="cancelBtn" class="btn-ghost">Отмена</button>
+      <button id="saveBtn" class="btn-primary">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
