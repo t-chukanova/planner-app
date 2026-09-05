@@ -54,6 +54,17 @@
       <input type="date" id="itemDate">
     </label>
 
+    <label class="field">
+      <span>Описание</span>
+      <textarea id="itemDesc" rows="3" placeholder="Необязательно"></textarea>
+    </label>
+
+    <div class="field">
+      <span>Подзадачи</span>
+      <div id="subtaskList" class="subtask-list"></div>
+      <button type="button" id="addSubtaskBtn" class="btn-ghost add-subtask-btn">+ Добавить подзадачу</button>
+    </div>
+
     <div id="blockTimeFields">
       <div class="time-row">
         <label class="field">

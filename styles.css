@@ -292,7 +292,14 @@ main{
 .type-btn{ flex:1; padding:9px; border-radius:9px; border:1px solid var(--line); background:transparent; color:var(--text-dim); font-size:13px; font-family:inherit; }
 .type-btn.active{ background: var(--amber); border-color: var(--amber); color: var(--ink); font-weight:600; }
 .field{ display:flex; flex-direction:column; gap:6px; margin-bottom:14px; font-size:13px; color: var(--text-dim); }
-.field input, .field select{ background: var(--surface-2); border:1px solid var(--line); border-radius:8px; padding:11px 12px; color: var(--text); font-size:15px; font-family:inherit; color-scheme: dark; }
+.field input, .field select, .field textarea{ background: var(--surface-2); border:1px solid var(--line); border-radius:8px; padding:11px 12px; color: var(--text); font-size:15px; font-family:inherit; color-scheme: dark; resize: vertical; }
+.subtask-list{ display:flex; flex-direction:column; gap:6px; margin-bottom:8px; }
+.subtask-row{ display:flex; align-items:center; gap:8px; }
+.subtask-row input[type=checkbox]{ width:18px; height:18px; flex-shrink:0; accent-color: var(--amber); }
+.subtask-row input[type=text]{ flex:1; background: var(--surface-2); border:1px solid var(--line); border-radius:7px; padding:8px 10px; color: var(--text); font-size:14px; font-family:inherit; }
+.subtask-row .subtask-del{ background:none; border:none; color: var(--text-dim); font-size:18px; padding:2px 6px; flex-shrink:0; }
+.add-subtask-btn{ width:100%; padding:9px; font-size:13px; }
+.item-sub-count{ opacity:0.85; }
 .time-row{ display:flex; gap:10px; }
 .time-row .field{ flex:1; }
 .color-row{ display:flex; gap:9px; flex-wrap:wrap; align-items:center; }

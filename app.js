@@ -74,12 +74,13 @@ function minutesLabel(mins) {
 }
 
 // ================= State =================
-let currentView = 'day';
+let currentView = '3day';
 let anchorDate = new Date(); anchorDate.setHours(0,0,0,0);
 let allBlocks = [];
 let allTodos = [];
 let editingId = null;
 let editingType = 'block';
+let currentSubtasks = [];
 
 const COLORS = ['#E8A33D','#6FCF97','#5B9BD5','#C77DFF','#E0654F','#4DD0E1','#F2C94C','#9AA7B8'];
 let selectedColor = COLORS[0];
@@ -214,6 +215,10 @@ function renderGrid(root, days) {
       const cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = !!t.done;
       cb.onchange = async () => { t.done = cb.checked; await put('todos', t); render(); };
       const span = document.createElement('span'); span.textContent = t.title;
+      if (t.subtasks && t.subtasks.length) {
+        const done = t.subtasks.filter(s => s.done).length;
+        span.textContent += ' (' + done + '/' + t.subtasks.length + ')';
+      }
       span.onclick = (e) => { e.preventDefault(); openSheet('todo', t); };
       chip.appendChild(cb); chip.appendChild(span);
       col.appendChild(chip);
@@ -276,7 +281,12 @@ function renderBlockEl(b) {
   el.style.borderLeftColor = b.color;
   el.innerHTML = '<div class="block-title"></div><div class="block-time"></div>';
   el.querySelector('.block-title').textContent = b.title;
-  el.querySelector('.block-time').textContent = minutesLabel(b.start) + '–' + minutesLabel(b.end);
+  let timeText = minutesLabel(b.start) + '–' + minutesLabel(b.end);
+  if (b.subtasks && b.subtasks.length) {
+    const done = b.subtasks.filter(s => s.done).length;
+    timeText += ' · ' + done + '/' + b.subtasks.length;
+  }
+  el.querySelector('.block-time').textContent = timeText;
 
   const topHandle = document.createElement('div'); topHandle.className = 'block-handle top';
   const botHandle = document.createElement('div'); botHandle.className = 'block-handle bottom';
@@ -474,6 +484,28 @@ function buildColorRow() {
   row.appendChild(customLabel);
 }
 
+function renderSubtasks() {
+  const list = document.getElementById('subtaskList');
+  list.innerHTML = '';
+  currentSubtasks.forEach((s, idx) => {
+    const row = document.createElement('div'); row.className = 'subtask-row';
+    const cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = !!s.done;
+    cb.onchange = () => { s.done = cb.checked; };
+    const txt = document.createElement('input'); txt.type = 'text'; txt.value = s.title; txt.placeholder = 'Подзадача';
+    txt.oninput = () => { s.title = txt.value; };
+    const del = document.createElement('button'); del.type = 'button'; del.className = 'subtask-del'; del.textContent = '×';
+    del.onclick = () => { currentSubtasks.splice(idx, 1); renderSubtasks(); };
+    row.appendChild(cb); row.appendChild(txt); row.appendChild(del);
+    list.appendChild(row);
+  });
+}
+document.getElementById('addSubtaskBtn').onclick = () => {
+  currentSubtasks.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 5), title: '', done: false });
+  renderSubtasks();
+  const rows = document.querySelectorAll('#subtaskList .subtask-row input[type=text]');
+  if (rows.length) rows[rows.length - 1].focus();
+};
+
 function setType(type) {
   editingType = type;
   document.querySelectorAll('.type-btn').forEach(b => b.classList.toggle('active', b.dataset.type === type));
@@ -488,6 +520,9 @@ function openSheet(type, item, presetDate, presetStartMin) {
 
   const today = presetDate || dateKey(anchorDate);
   document.getElementById('itemDate').value = item ? item.date : today;
+  document.getElementById('itemDesc').value = item ? (item.description || '') : '';
+  currentSubtasks = item && item.subtasks ? item.subtasks.map(s => ({ ...s })) : [];
+  renderSubtasks();
 
   if (type === 'block') {
     selectedColor = item ? item.color : COLORS[0];
@@ -523,6 +558,8 @@ document.getElementById('saveBtn').onclick = async () => {
   const title = document.getElementById('itemTitle').value.trim();
   const date = document.getElementById('itemDate').value;
   if (!title || !date) return;
+  const description = document.getElementById('itemDesc').value.trim();
+  const subtasks = currentSubtasks.filter(s => s.title.trim() !== '').map(s => ({ id: s.id, title: s.title.trim(), done: !!s.done }));
 
   if (editingType === 'block') {
     const [sh, sm] = document.getElementById('itemStart').value.split(':').map(Number);
@@ -531,14 +568,15 @@ document.getElementById('saveBtn').onclick = async () => {
     if (end <= start) end = start + 30;
     const block = {
       id: editingId || (Date.now().toString(36) + Math.random().toString(36).slice(2, 6)),
-      title, date, start, end, color: selectedColor,
+      title, date, start, end, color: selectedColor, description, subtasks,
       notify: true, notified: false
     };
     await put('blocks', block);
   } else {
     const todo = {
       id: editingId || (Date.now().toString(36) + Math.random().toString(36).slice(2, 6)),
-      title, date, done: editingId ? (allTodos.find(t => t.id === editingId) || {}).done : false
+      title, date, description, subtasks,
+      done: editingId ? (allTodos.find(t => t.id === editingId) || {}).done : false
     };
     await put('todos', todo);
   }
@@ -556,7 +594,7 @@ document.querySelectorAll('.view-tab').forEach(btn => btn.onclick = () => setVie
 
 // ================= Init =================
 (async function init() {
-  document.querySelector('.view-tab[data-view="day"]').classList.add('active');
+  document.querySelector('.view-tab[data-view="' + currentView + '"]').classList.add('active');
   updatePermStatus();
   await registerSW();
   await reloadData();
